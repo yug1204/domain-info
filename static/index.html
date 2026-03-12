@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Recon | Advanced Intel</title>
+    <!-- Premium Fonts: Outfit for sleek sans-serif, JetBrains Mono for data displays -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Background animations for premium feel -->
+    <div class="background-effects">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+        <div class="grid-overlay"></div>
+    </div>
+
+    <main class="container">
+        <header class="header">
+            <h1 class="title">Domain<span class="highlight">Recon</span></h1>
+            <p class="subtitle">Advanced Intelligence Gathering</p>
+        </header>
+
+        <section class="search-section glass-panel">
+            <div class="input-group">
+                <input type="text" id="domainInput" placeholder="Enter target domain (e.g., example.com)" autocomplete="off">
+                <button id="scanBtn" class="primary-btn">
+                    <span class="btn-text">Investigate</span>
+                    <span class="loader hidden"></span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Initial hidden grid for results -->
+        <section id="results" class="results-grid hidden">
+            <!-- WHOIS Card -->
+            <div class="card glass-panel staggered-anim" style="--delay: 0.1s">
+                <div class="card-header">
+                    <h2>Registrar Information</h2>
+                    <div class="icon">👤</div>
+                </div>
+                <div class="card-content" id="whoisContent"></div>
+            </div>
+
+            <!-- DNS Card -->
+            <div class="card glass-panel staggered-anim" style="--delay: 0.2s">
+                <div class="card-header">
+                    <h2>DNS Architecture</h2>
+                    <div class="icon">🌍</div>
+                </div>
+                <div class="card-content" id="dnsContent"></div>
+            </div>
+
+            <!-- Ports Card -->
+            <div class="card glass-panel staggered-anim" style="--delay: 0.3s">
+                <div class="card-header">
+                    <h2>Network Perimeter</h2>
+                    <div class="icon">🔌</div>
+                </div>
+                <div class="card-content" id="portsContent"></div>
+            </div>
+
+            <!-- SSL Card -->
+            <div class="card glass-panel staggered-anim" style="--delay: 0.4s">
+                <div class="card-header">
+                    <h2>Cryptographic Data</h2>
+                    <div class="icon">🔒</div>
+                </div>
+                <div class="card-content" id="sslContent"></div>
+            </div>
+
+            <!-- Headers Card -->
+            <div class="card glass-panel full-width staggered-anim" style="--delay: 0.5s">
+                <div class="card-header">
+                    <h2>Web Server Footprint</h2>
+                    <div class="icon">📄</div>
+                </div>
+                <div class="card-content" id="headersContent"></div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
