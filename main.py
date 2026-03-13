@@ -95,18 +95,56 @@ def get_headers(domain):
         except Exception as e2:
             return {"error": str(e2)}
 
+def get_geolocation(domain):
+    try:
+        ip = socket.gethostbyname(domain)
+        response = requests.get(f"http://ip-api.com/json/{ip}", timeout=3)
+        data = response.json()
+        if data.get("status") == "success":
+            return {
+                "ip": ip,
+                "country": data.get("country"),
+                "region": data.get("regionName"),
+                "city": data.get("city"),
+                "isp": data.get("isp"),
+                "org": data.get("org")
+            }
+        return {"ip": ip, "error": "Geolocation failed"}
+    except Exception as e:
+        return {"error": str(e)}
+
+def get_robots_txt(domain):
+    try:
+        url = f"https://{domain}/robots.txt"
+        response = requests.get(url, timeout=3, allow_redirects=True)
+        if response.status_code == 200:
+            lines = response.text.splitlines()
+            return {"found": True, "content": lines[:20], "total_lines": len(lines)}
+        
+        url = f"http://{domain}/robots.txt"
+        response = requests.get(url, timeout=3, allow_redirects=True)
+        if response.status_code == 200:
+            lines = response.text.splitlines()
+            return {"found": True, "content": lines[:20], "total_lines": len(lines)}
+            
+        return {"found": False, "error": f"Status code: {response.status_code}"}
+    except Exception as e:
+        return {"found": False, "error": str(e)}
+
 @app.get("/api/scan")
 def scan_domain(url: str):
     domain = get_domain_from_url(url)
     if not domain:
         raise HTTPException(status_code=400, detail="Invalid domain")
     
-    with ThreadPoolExecutor(max_workers=5) as executor:
+    with ThreadPoolExecutor(max_workers=7) as executor:
         future_whois = executor.submit(get_whois, domain)
         future_dns = executor.submit(get_dns, domain)
         future_ports = executor.submit(get_ports, domain)
         future_ssl = executor.submit(get_ssl, domain)
         future_headers = executor.submit(get_headers, domain)
+        future_geo = executor.submit(get_geolocation, domain)
+        future_robots = executor.submit(get_robots_txt, domain)
 
     return {
         "domain": domain,
@@ -114,5 +152,10 @@ def scan_domain(url: str):
         "dns": future_dns.result(),
         "open_ports": future_ports.result(),
         "ssl": future_ssl.result(),
-        "headers": future_headers.result()
+        "headers": future_headers.result(),
+        "geolocation": future_geo.result(),
+        "robots_txt": future_robots.result()
     }
+     
+
+     

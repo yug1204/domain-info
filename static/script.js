@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const loader = document.querySelector('.loader');
     const resultsGrid = document.getElementById('results');
 
+    const terminal = document.getElementById('scanningTerminal');
+    const terminalOutput = document.getElementById('terminalOutput');
+
     // Enter key handler
     domainInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
@@ -13,6 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     scanBtn.addEventListener('click', performScan);
+
+    function addLogLine(text, type = '') {
+        const line = document.createElement('div');
+        line.className = `terminal-line ${type}`;
+        line.textContent = text;
+        terminalOutput.appendChild(line);
+        terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
 
     async function performScan() {
         const url = domainInput.value.trim();
@@ -26,15 +37,50 @@ document.addEventListener('DOMContentLoaded', () => {
         loader.classList.remove('hidden');
         scanBtn.disabled = true;
         
-        // Hide and clear results
+        // Hide grid and show Terminal
         resultsGrid.classList.add('hidden');
         document.querySelectorAll('.card-content').forEach(el => el.innerHTML = '');
+        terminalOutput.innerHTML = '';
+        terminal.classList.remove('hidden');
+
+        // Fake loading logs for dramatic effect
+        const logs = [
+            { text: `Initializing deep scan on target: ${url}...`, type: '', delay: 200 },
+            { text: 'Bypassing edge cache layers...', type: '', delay: 600 },
+            { text: 'Resolving DNS topology [A, AAAA, MX, NS, TXT]...', type: 'success', delay: 1100 },
+            { text: 'Attempting WHOIS registry extraction...', type: '', delay: 1500 },
+            { text: 'Probing network perimeter for open sockets...', type: 'warning', delay: 2200 },
+            { text: 'Analyzing SSL/TLS cryptographic signatures...', type: 'success', delay: 2800 },
+            { text: 'Triangulating server geolocation coordinates...', type: '', delay: 3400 },
+            { text: 'Extracting hidden robots.txt directives...', type: 'warning', delay: 3900 },
+            { text: 'Compiling reconnaissance packet...', type: 'success', delay: 4500 }
+        ];
+
+        let logOuts = [];
+        logs.forEach(log => {
+            let timeout = setTimeout(() => {
+                addLogLine(log.text, log.type);
+            }, log.delay);
+            logOuts.push(timeout);
+        });
+
+        const startTime = Date.now();
 
         try {
             const response = await fetch(`/api/scan?url=${encodeURIComponent(url)}`);
             const data = await response.json();
 
+            // Ensure our dramatic animation plays for at least a few seconds 
+            // even if the API comes back instantly
+            const timeElapsed = Date.now() - startTime;
+            const minimumDelay = 5000;
+            if (timeElapsed < minimumDelay) {
+                await new Promise(resolve => setTimeout(resolve, minimumDelay - timeElapsed));
+            }
+
             if (response.ok) {
+                terminal.classList.add('hidden');
+                
                 renderResults(data);
                 // Retrigger animations
                 const cards = document.querySelectorAll('.card');
@@ -46,13 +92,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 resultsGrid.classList.remove('hidden');
             } else {
-                alert(`Error: ${data.detail || 'Failed to analyze domain'}`);
+                addLogLine(`CRITICAL ERROR: ${data.detail || 'Failed to analyze domain'}`, 'error');
             }
         } catch (error) {
-            alert('A network error occurred connecting to the backend server.');
+            addLogLine('CRITICAL FAILURE: Network connection to server lost.', 'error');
             console.error(error);
         } finally {
             // Restore UI Search State
+            logOuts.forEach(clearTimeout);
             btnText.classList.remove('hidden');
             loader.classList.add('hidden');
             scanBtn.disabled = false;
@@ -126,6 +173,39 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         } else {
             sslEl.innerHTML = `<span class="error-text">No valid SSL configuration extracted (${data.ssl?.error || 'No HTTPS context'}).</span>`;
+        }
+
+        // Geolocation
+        const geoEl = document.getElementById('geoContent');
+        if (data.geolocation && !data.geolocation.error) {
+            const { ip, country, region, city, isp, org } = data.geolocation;
+            geoEl.innerHTML = `
+                <div class="data-row"><span class="data-key">IP Address:</span><span class="data-value">${ip || 'N/A'}</span></div>
+                <div class="data-row"><span class="data-key">Country:</span><span class="data-value">${country || 'N/A'}</span></div>
+                <div class="data-row"><span class="data-key">Region/City:</span><span class="data-value">${region || 'N/A'}, ${city || 'N/A'}</span></div>
+                <div class="data-row"><span class="data-key">ISP:</span><span class="data-value">${isp || 'N/A'}</span></div>
+                <div class="data-row"><span class="data-key">Organization:</span><span class="data-value">${org || 'N/A'}</span></div>
+            `;
+        } else {
+            geoEl.innerHTML = `<span class="error-text">Geolocation data unavailable (${data.geolocation?.error || 'Unknown error'}).</span>`;
+        }
+
+        // Robots.txt
+        const robotsEl = document.getElementById('robotsContent');
+        if (data.robots_txt && data.robots_txt.found) {
+            const lines = data.robots_txt.content;
+            const total = data.robots_txt.total_lines;
+            robotsEl.innerHTML = `
+                <div class="data-row" style="flex-direction: column; align-items: flex-start;">
+                    <span class="data-key" style="margin-bottom: 0.8rem;">Robots.txt found (${total} lines):</span>
+                    <div style="background: rgba(0,0,0,0.2); width: 100%; box-sizing: border-box; padding: 0.5rem; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.85em; max-height: 150px; overflow-y: auto;">
+                        ${lines.join('<br>')}
+                        ${total > lines.length ? '<br><i>...truncated</i>' : ''}
+                    </div>
+                </div>
+            `;
+        } else {
+            robotsEl.innerHTML = `<span class="empty-text">No robots.txt found or accessible.</span>`;
         }
 
         // Headers

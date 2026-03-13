@@ -32,6 +32,19 @@
             </div>
         </section>
 
+        <!-- Cyber Loading Terminal -->
+        <section id="scanningTerminal" class="scanning-terminal hidden glass-panel">
+            <div class="terminal-header">
+                <span class="dot red"></span>
+                <span class="dot yellow"></span>
+                <span class="dot green"></span>
+                <div class="terminal-title">SYS://OP/SCANNING_PROTOCOL</div>
+            </div>
+            <div class="terminal-body" id="terminalOutput">
+                <!-- Logs will be injected here via JS -->
+            </div>
+        </section>
+
         <!-- Initial hidden grid for results -->
         <section id="results" class="results-grid hidden">
             <!-- WHOIS Card -->
@@ -70,8 +83,26 @@
                 <div class="card-content" id="sslContent"></div>
             </div>
 
+            <!-- Geolocation Card -->
+            <div class="card glass-panel staggered-anim" style="--delay: 0.5s">
+                <div class="card-header">
+                    <h2>Server Geolocation</h2>
+                    <div class="icon">📍</div>
+                </div>
+                <div class="card-content" id="geoContent"></div>
+            </div>
+
+            <!-- Robots.txt Card -->
+            <div class="card glass-panel staggered-anim" style="--delay: 0.6s">
+                <div class="card-header">
+                    <h2>Robots.txt Analysis</h2>
+                    <div class="icon">🤖</div>
+                </div>
+                <div class="card-content" id="robotsContent"></div>
+            </div>
+
             <!-- Headers Card -->
-            <div class="card glass-panel full-width staggered-anim" style="--delay: 0.5s">
+            <div class="card glass-panel full-width staggered-anim" style="--delay: 0.7s">
                 <div class="card-header">
                     <h2>Web Server Footprint</h2>
                     <div class="icon">📄</div>
