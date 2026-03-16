@@ -44,6 +44,11 @@ body {
     pointer-events: auto; /* Allow interaction with the 3D model */
 }
 
+/* Hide the "Built with Spline" watermark */
+spline-viewer::part(logo) {
+    display: none !important;
+}
+
 .background-effects {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
