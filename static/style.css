@@ -39,7 +39,8 @@ body {
     top: 0;
     left: 0;
     width: 100vw;
-    height: calc(100vh + 80px); /* Extend below the screen to push the logo off-screen */
+    height: calc(100vh + 150px); /* Fallback */
+    height: calc(100dvh + 150px); /* Dynamic viewport for mobile address bar shifts */
     z-index: 0; /* Behind actual content container, above background layers */
     pointer-events: auto; /* Allow interaction with the 3D model */
 }
@@ -516,3 +517,201 @@ input[type="text"]:focus {
     color: rgba(140, 165, 161, 0.6);
     font-style: italic;
 }
+
+/* =============================================
+   MOBILE RESPONSIVENESS (Full Overhaul)
+   ============================================= */
+
+/* --- Tablet & Large Mobile (max 768px) --- */
+@media screen and (max-width: 768px) {
+
+    /* Hide the heavy 3D Spline viewer on mobile to save performance */
+    .robot-bg {
+        display: none !important;
+    }
+
+    /* Pulse the ambient glow background instead */
+    .background-effects {
+        z-index: -1;
+    }
+
+    /* Show animated cyber grid as alternative background */
+    .grid-overlay {
+        display: block !important;
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background-image:
+            linear-gradient(transparent 95%, rgba(0, 255, 170, 0.15) 100%),
+            linear-gradient(90deg, transparent 95%, rgba(0, 191, 255, 0.15) 100%);
+        background-size: 40px 40px;
+        z-index: -1;
+        animation: cyberGridMobile 20s linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes cyberGridMobile {
+        0%   { transform: translateY(0); }
+        100% { transform: translateY(40px); }
+    }
+
+    /* --- Layout --- */
+    .container {
+        padding: 2.5rem 1rem 3rem;
+    }
+
+    .header {
+        margin-bottom: 2.5rem;
+    }
+
+    /* --- Typography --- */
+    .title {
+        font-size: 2.6rem;
+        letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+        font-size: 0.82rem;
+        letter-spacing: 2px;
+    }
+
+    /* --- Search Bar: stack input & button vertically --- */
+    .search-section {
+        padding: 1.2rem;
+        margin-bottom: 2rem;
+    }
+
+    .input-group {
+        flex-direction: column;
+        gap: 0.9rem;
+    }
+
+    input[type="text"] {
+        font-size: 1rem;
+        padding: 1rem 1.2rem;
+        width: 100%;
+    }
+
+    .primary-btn {
+        width: 100%;
+        min-width: unset;
+        padding: 1rem 1.2rem;
+        font-size: 1rem;
+    }
+
+    /* --- Terminal --- */
+    .scanning-terminal {
+        margin-bottom: 2rem;
+    }
+
+    .terminal-title {
+        font-size: 0.75rem;
+        letter-spacing: 1px;
+    }
+
+    .terminal-body {
+        height: 180px;
+        padding: 1rem;
+        font-size: 0.82rem;
+    }
+
+    /* --- Results Cards: single column --- */
+    .results-grid {
+        grid-template-columns: 1fr;
+        gap: 1.2rem;
+    }
+
+    .card {
+        padding: 1.4rem;
+    }
+
+    .card-header h2 {
+        font-size: 1.1rem;
+    }
+
+    .card-header .icon {
+        font-size: 1.5rem;
+    }
+
+    /* --- Data rows: stack key & value --- */
+    .data-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .data-key {
+        min-width: unset;
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 0.25rem;
+        font-size: 0.82rem;
+    }
+
+    .data-value {
+        font-size: 0.9rem;
+    }
+
+    /* Tags wrap nicely on small screens */
+    .tag {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.6rem;
+    }
+}
+
+/* --- Small Mobile Phones (max 480px) --- */
+@media screen and (max-width: 480px) {
+
+    .container {
+        padding: 2rem 0.8rem 2.5rem;
+    }
+
+    .header {
+        margin-bottom: 2rem;
+    }
+
+    .title {
+        font-size: 2rem;
+        letter-spacing: 0;
+    }
+
+    .subtitle {
+        font-size: 0.72rem;
+        letter-spacing: 1.5px;
+    }
+
+    .subtitle::before {
+        content: ""; /* Hide SYSTEM OP: prefix on very small screens */
+    }
+
+    .search-section {
+        padding: 1rem;
+    }
+
+    input[type="text"] {
+        font-size: 0.95rem;
+        padding: 0.9rem 1rem;
+    }
+
+    .primary-btn {
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+        padding: 0.9rem 1rem;
+    }
+
+    .terminal-body {
+        height: 160px;
+        font-size: 0.78rem;
+    }
+
+    .card {
+        padding: 1.2rem;
+    }
+
+    .card-header h2 {
+        font-size: 1rem;
+    }
+
+    .card-content {
+        font-size: 0.85rem;
+    }
+}
+
