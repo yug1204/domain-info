@@ -69,31 +69,34 @@ When you trigger a scan, a **live hacking terminal** appears and streams log lin
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Python 3.10 or newer
-- pip
+- Python 3.10+ and pip
+- **OR** Docker and Docker Compose (Recommended)
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yug1204/domain-info.git
-   cd domain-info
-   ```
+**1. Clone the repository**
+```bash
+git clone https://github.com/yug1204/domain-info.git
+cd domain-info
+```
 
-2. **Install dependencies**
-   ```bash
-   pip install fastapi uvicorn python-whois dnspython requests
-   ```
+**2. Start the Server**
 
-3. **Run the server**
-   ```bash
-   python -m uvicorn main:app --reload
-   ```
+*Option A: Run with Docker (Recommended)*
+```bash
+docker-compose up --build
+```
 
-4. **Open in browser**
-   ```
-   http://127.0.0.1:8000
-   ```
+*Option B: Run natively*
+```bash
+pip install -r requirements.txt
+python -m uvicorn main:app --reload
+```
+
+**3. Open in browser**
+```
+http://127.0.0.1:8000
+```
 
 ---
 
@@ -129,6 +132,11 @@ GET /api/scan?url=example.com
 ```
 domain-info/
 ├── main.py              # FastAPI backend — all 7 recon modules
+├── requirements.txt     # Python dependencies
+├── LICENSE              # MIT License
+├── CONTRIBUTING.md      # Contribution guidelines
+├── CODE_OF_CONDUCT.md   # Community standards
+├── SECURITY.md          # Security policy
 └── static/
     ├── index.html       # Main UI layout + terminal element
     ├── script.js        # Scan logic, terminal animation, result rendering

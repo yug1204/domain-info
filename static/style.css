@@ -34,6 +34,16 @@ body {
 }
 
 /* Background Effects */
+.robot-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0; /* Behind actual content container, above background layers */
+    pointer-events: auto; /* Allow interaction with the 3D model */
+}
+
 .background-effects {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -86,6 +96,12 @@ body {
     padding: 4rem 1.5rem;
     position: relative;
     z-index: 1;
+    pointer-events: none; /* Let clicks pass to the 3D robot background */
+}
+
+/* Make actual contents of container interactive */
+.container > * {
+    pointer-events: auto;
 }
 
 /* Header */
