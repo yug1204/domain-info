@@ -39,14 +39,9 @@ body {
     top: 0;
     left: 0;
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh + 80px); /* Extend below the screen to push the logo off-screen */
     z-index: 0; /* Behind actual content container, above background layers */
     pointer-events: auto; /* Allow interaction with the 3D model */
-}
-
-/* Hide the "Built with Spline" watermark */
-spline-viewer::part(logo) {
-    display: none !important;
 }
 
 .background-effects {
